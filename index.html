@@ -7,268 +7,361 @@
 </head>
 <body>
 <x-dc>
-<helmet><script src="./image-slot.js"></script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#F6F3EC;color:#232824;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#3F4A3C;text-decoration:none}a:hover{color:#B9785E}*{box-sizing:border-box}</style></helmet>
-<div style="background:#F6F3EC;min-width:0">
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#F6F3EC;color:#232824;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}a{color:#3F4A3C;text-decoration:none}a:hover{color:#B9785E}*{box-sizing:border-box}input[type=range].dm{-webkit-appearance:none;appearance:none;height:2px;background:rgba(246,243,236,.3);outline:none}input[type=range].dm::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#F6F3EC;border:3px solid #B9785E;cursor:pointer}@keyframes dmMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}@keyframes dmFill{from{width:0}to{width:100%}}@keyframes dmPulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(8px);opacity:.4}}</style></helmet>
+<div style="background:#F6F3EC;min-width:0;position:relative">
 
-<header style="position:sticky;top:0;z-index:20;background:rgba(246,243,236,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(35,40,36,.08)">
-  <div style="max-width:1440px;margin:0 auto;padding:18px clamp(20px,4vw,56px);display:flex;align-items:center;justify-content:space-between;gap:24px">
-    <a href="#top" aria-label="DOMAIRE home" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#232824">
+<header style="position:fixed;top:0;left:0;right:0;z-index:30;background:{{ hdrBg }};backdrop-filter:{{ hdrBlur }};border-bottom:1px solid {{ hdrLine }};transition:background .4s ease,border-color .4s ease">
+  <div style="max-width:1440px;margin:0 auto;padding:{{ hdrPad }} clamp(20px,4vw,56px);display:flex;align-items:center;justify-content:space-between;gap:24px;transition:padding .4s ease">
+    <a href="#top" aria-label="DOMAIRE home" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ hdrInk }};transition:color .4s">
       <span style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;letter-spacing:.26em;line-height:1;margin-right:-.26em">DOMΛIRE</span>
       <span style="font-size:8px;letter-spacing:.42em;font-weight:500;margin-right:-.42em;white-space:nowrap">DESIGN · BUILD · RENOVATE</span>
     </a>
     <nav style="display:flex;align-items:center;gap:clamp(14px,2vw,30px);justify-content:flex-end">
       <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
         <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
-          <a href="#" style="font-size:13px;color:#232824;letter-spacing:.02em;white-space:nowrap" style-hover="color:#B9785E">{{ n }}</a>
+          <a href="#" style="font-size:13px;color:{{ n.color }};letter-spacing:.02em;white-space:nowrap;transition:color .4s" style-hover="color:#B9785E">{{ n.label }}</a>
         </sc-for>
       </sc-if>
       <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ toggleMenu }}" style="cursor:pointer;border:1px solid rgba(35,40,36,.25);background:transparent;font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;padding:11px 16px;border-radius:2px;color:#232824">{{ menuLabel }}</button>
+        <button onClick="{{ toggleMenu }}" style="cursor:pointer;border:1px solid {{ hdrInk }};background:transparent;font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;padding:11px 16px;border-radius:2px;color:{{ hdrInk }}">{{ menuLabel }}</button>
       </sc-if>
-      <a href="#start" style="font-size:13px;letter-spacing:.04em;background:#3F4A3C;color:#F6F3EC;padding:12px 20px;border-radius:2px;white-space:nowrap" style-hover="background:#2f382d;color:#F6F3EC">Start a Project</a>
+      <a href="#start" style="font-size:13px;letter-spacing:.04em;background:{{ ctaBg }};color:{{ ctaInk }};padding:12px 20px;border-radius:2px;white-space:nowrap;transition:background .4s,color .4s" style-hover="background:#B9785E;color:#F6F3EC">Start a Project</a>
     </nav>
   </div>
+  <div style="position:absolute;left:0;bottom:-1px;height:2px;background:#B9785E;width:{{ progress }}%"></div>
   <sc-if value="{{ menuVisible }}" hint-placeholder-val="{{ false }}">
-    <div style="border-top:1px solid rgba(35,40,36,.08);padding:12px clamp(20px,4vw,56px) 24px;display:flex;flex-direction:column">
+    <div style="background:#F6F3EC;border-top:1px solid rgba(35,40,36,.08);padding:12px clamp(20px,4vw,56px) 24px;display:flex;flex-direction:column">
       <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
-        <a href="#" style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#232824;padding:10px 0;border-bottom:1px solid rgba(35,40,36,.08)" style-hover="color:#B9785E">{{ n }}</a>
+        <a href="#" style="font-family:'Cormorant Garamond',serif;font-size:26px;color:#232824;padding:10px 0;border-bottom:1px solid rgba(35,40,36,.08)" style-hover="color:#B9785E">{{ n.label }}</a>
       </sc-for>
     </div>
   </sc-if>
 </header>
 
-<section id="top" data-screen-label="01 Hero" style="position:relative;min-height:min(88vh,820px);display:flex;align-items:flex-end;overflow:hidden;background:#3F4A3C">
-  <img src="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=2400" alt="Stone terrace with outdoor lounge, olive tree and infinity pool overlooking the Mediterranean coast" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%">
-  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,33,27,.72) 0%,rgba(28,33,27,.35) 48%,rgba(28,33,27,0) 75%)"></div>
+<section id="top" data-screen-label="01 Hero" style="position:relative;height:min(100vh,940px);min-height:640px;display:flex;align-items:flex-end;overflow:hidden;background:#232824">
+  <img src="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=2400" alt="Stone terrace with outdoor lounge, olive tree and pool overlooking the Mediterranean coast" style="position:absolute;left:0;right:0;top:-6%;width:100%;height:112%;object-fit:cover;object-position:center 60%;transform:translateY({{ heroShift }}px) scale({{ heroScale }});transition:transform 2.4s cubic-bezier(.2,.7,.2,1);will-change:transform">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,33,27,.45) 0%,rgba(28,33,27,0) 28%),linear-gradient(90deg,rgba(28,33,27,.78) 0%,rgba(28,33,27,.35) 50%,rgba(28,33,27,0) 78%)"></div>
+  <div style="position:relative;max-width:1440px;width:100%;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(64px,11vh,120px);display:flex;justify-content:space-between;align-items:flex-end;gap:40px;opacity:{{ heroFade }}">
+    <div style="max-width:720px;color:#F6F3EC;display:flex;flex-direction:column;gap:26px">
+      <p style="margin:0;font-size:11px;letter-spacing:.32em;font-weight:500;opacity:{{ in1.o }};transform:translateY({{ in1.y }}px);transition:opacity 1s ease .1s,transform 1s cubic-bezier(.2,.7,.2,1) .1s">DESIGN · BUILD · RENOVATE · MARBELLA &amp; COSTA DEL SOL</p>
+      <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(52px,7.4vw,118px);line-height:.94;letter-spacing:-.015em;display:flex;flex-direction:column">
+        <span style="display:block;overflow:hidden;padding-bottom:.06em"><span style="display:block;transform:translateY({{ in2.y }}%);transition:transform 1.3s cubic-bezier(.2,.7,.2,1) .25s">Transforming homes.</span></span>
+        <span style="display:block;overflow:hidden;padding-bottom:.08em"><em style="display:block;transform:translateY({{ in3.y }}%);transition:transform 1.3s cubic-bezier(.2,.7,.2,1) .45s">Inside and out.</em></span>
+      </h1>
+      <div style="height:2px;background:#B9785E;width:{{ in4.w }}px;transition:width 1.2s cubic-bezier(.2,.7,.2,1) .9s"></div>
+      <p style="margin:0;font-size:17px;line-height:1.65;font-weight:300;max-width:520px;text-wrap:pretty;opacity:{{ in4.o }};transform:translateY({{ in4.y }}px);transition:opacity 1s ease 1s,transform 1s ease 1s">DOMAIRE designs, builds and renovates homes across Marbella and the Costa del Sol, with a particular specialism in exceptional outdoor spaces.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;opacity:{{ in4.o }};transition:opacity 1s ease 1.2s">
+        <a href="#start" style="background:#F6F3EC;color:#232824;padding:17px 30px;font-size:14px;letter-spacing:.04em;border-radius:2px" style-hover="background:#B9785E;color:#F6F3EC">Start your project</a>
+        <a href="#work" style="border:1px solid rgba(246,243,236,.7);color:#F6F3EC;padding:16px 30px;font-size:14px;letter-spacing:.04em;border-radius:2px" style-hover="background:rgba(246,243,236,.14);color:#F6F3EC">Explore our work</a>
+      </div>
+    </div>
+    <a href="#intro" aria-label="Scroll to content" style="display:flex;flex-direction:column;align-items:center;gap:12px;color:#F6F3EC;font-size:10px;letter-spacing:.32em;opacity:{{ in4.o }};transition:opacity 1s ease 1.6s">
+      <span style="writing-mode:vertical-rl">SCROLL</span>
+      {{ scrollCue }}
+    </a>
+  </div>
   <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
-    <span style="position:absolute;top:20px;right:24px;font:500 10px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#F6F3EC;background:rgba(35,40,36,.55);padding:6px 10px;border-radius:2px">STOCK IMAGERY · PEXELS</span>
+    <span style="position:absolute;bottom:18px;right:24px;font:500 10px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#D4C4B0">STOCK IMAGERY · PEXELS</span>
   </sc-if>
-  <div style="position:relative;max-width:1440px;width:100%;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,104px)">
-    <div style="max-width:640px;color:#F6F3EC;display:flex;flex-direction:column;gap:26px">
-      <p style="margin:0;font-size:11px;letter-spacing:.32em;font-weight:500">DESIGN · BUILD · RENOVATE · MARBELLA &amp; COSTA DEL SOL</p>
-      <h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(48px,6.4vw,96px);line-height:.98;letter-spacing:-.01em">Transforming homes.<br><em style="font-weight:300">Inside and out.</em></h1>
-      <div style="width:64px;height:2px;background:#B9785E"></div>
-      <p style="margin:0;font-size:17px;line-height:1.65;font-weight:300;max-width:520px;text-wrap:pretty">DOMAIRE designs, builds and renovates homes across Marbella and the Costa del Sol, with a particular specialism in exceptional outdoor spaces.</p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap">
-        <a href="#start" style="background:#F6F3EC;color:#232824;padding:16px 28px;font-size:14px;letter-spacing:.04em;border-radius:2px" style-hover="background:#B9785E;color:#F6F3EC">Start your project</a>
-        <a href="#work" style="border:1px solid rgba(246,243,236,.7);color:#F6F3EC;padding:15px 28px;font-size:14px;letter-spacing:.04em;border-radius:2px" style-hover="background:rgba(246,243,236,.12);color:#F6F3EC">Explore our work</a>
-      </div>
-    </div>
-  </div>
 </section>
 
-<section data-screen-label="02 Intro" style="max-width:1440px;margin:0 auto;padding:clamp(80px,11vw,160px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(40px,6vw,96px);align-items:start">
-  <div style="display:flex;flex-direction:column;gap:22px">
+<div style="background:#3F4A3C;color:#F6F3EC;overflow:hidden;border-bottom:1px solid rgba(246,243,236,.1)">{{ marquee }}</div>
+
+<section id="intro" ref="{{ introRef }}" data-screen-label="02 Intro" style="max-width:1440px;margin:0 auto;padding:clamp(96px,12vw,180px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(40px,6vw,96px);align-items:start">
+  <div data-reveal="0" style="display:flex;flex-direction:column;gap:22px;position:sticky;top:120px">
     <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">OUR PHILOSOPHY</p>
-    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,68px);line-height:1.02">A better way to live at home.</h2>
+    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5vw,76px);line-height:1">A better way to live at home.</h2>
+    <p style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;line-height:1.4;color:#3F4A3C;max-width:420px">A home can already be beautiful and still have more to give.</p>
   </div>
-  <div style="display:flex;flex-direction:column;gap:22px;font-size:17px;line-height:1.75;font-weight:300;color:#232824;padding-top:8px">
-    <p style="margin:0;font-family:'Cormorant Garamond',serif;font-size:26px;line-height:1.4;font-weight:400;text-wrap:pretty">A home can already be beautiful and still have more to give.</p>
-    <p style="margin:0;text-wrap:pretty">A terrace can work harder. A garden can connect more naturally to the house. A kitchen can open into the way you entertain. An entire villa can be rethought around the way you live now.</p>
-    <p style="margin:0;text-wrap:pretty">DOMAIRE looks at the bigger picture. We bring design thinking, specialist expertise, construction and project coordination together so the finished result feels considered as a whole.</p>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <sc-for list="{{ scrub }}" as="l" hint-placeholder-count="4">
+      <p style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.2;color:#232824;opacity:{{ l.o }};transition:opacity .25s linear;padding:14px 0;border-bottom:1px solid rgba(35,40,36,.1);display:flex;gap:20px;align-items:baseline">
+        <span style="font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.2em;font-weight:500;color:#B9785E;flex:none">{{ l.n }}</span><span style="text-wrap:balance">{{ l.t }}</span>
+      </p>
+    </sc-for>
+    <p data-reveal="100" style="margin:28px 0 0;font-size:16px;line-height:1.8;font-weight:300;max-width:560px;text-wrap:pretty">DOMAIRE looks at the bigger picture. We bring design thinking, specialist expertise, construction and project coordination together so the finished result feels considered as a whole.</p>
   </div>
 </section>
 
-<section data-screen-label="03 Outdoor statement" style="background:#3F4A3C;color:#F6F3EC">
-  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))">
-    <div style="position:relative;position:relative;min-height:560px;background:repeating-linear-gradient(135deg,#465243 0 12px,#4b5748 12px 24px);display:flex;align-items:flex-end;padding:24px">
-      <image-slot id="a-img-1" shape="rect" src="https://images.pexels.com/photos/2290753/pexels-photo-2290753.jpeg?auto=compress&cs=tinysrgb&w=1600" placeholder="photo: covered terrace dining at dusk, stone + timber" style="position:absolute;inset:0"></image-slot>
-    </div>
-    <div style="padding:clamp(56px,8vw,120px) clamp(24px,5vw,88px);display:flex;flex-direction:column;justify-content:center;gap:28px">
-      <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#D4C4B0;font-weight:500">OUTDOOR LIVING</p>
-      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(38px,4.2vw,62px);line-height:1.06;text-wrap:balance">Sometimes the best room in the house isn't in the house.</h2>
-      <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;max-width:520px;color:#EBE1D6;text-wrap:pretty">On the Costa del Sol, outside is part of everyday life. It is where mornings start, where friends stay for dinner and where much of the year can be spent.</p>
-      <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;max-width:520px;color:#EBE1D6;text-wrap:pretty">We consider the relationship between house and garden, sunlight and shade, cooking and dining, planting and materials, water, lighting and the way people naturally move through a space.</p>
-      <div style="display:flex;align-items:center;gap:18px;padding-top:8px">
-        <div style="width:48px;height:2px;background:#B9785E"></div>
-        <span style="font-family:'Cormorant Garamond',serif;font-size:24px">Make more of life outside.</span>
+<section data-screen-label="03 Outdoor — Sun & shade" style="background:#232824;color:#F6F3EC">
+  <div style="position:relative;min-height:min(92vh,860px);overflow:hidden;display:flex;align-items:flex-end">
+    <img src="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=2400" alt="Mediterranean terrace with outdoor lounge and pool" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 70%;filter:{{ tod.filter }};transition:filter 1.2s ease">
+    <div style="position:absolute;inset:0;background:{{ tod.tint }};transition:background 1.2s ease;mix-blend-mode:multiply"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 28% 58%,rgba(255,196,130,.55) 0,rgba(255,196,130,0) 9%),radial-gradient(circle at 62% 52%,rgba(255,196,130,.45) 0,rgba(255,196,130,0) 8%),radial-gradient(circle at 84% 64%,rgba(255,196,130,.4) 0,rgba(255,196,130,0) 10%);opacity:{{ tod.glow }};transition:opacity 1.4s ease;mix-blend-mode:screen"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,33,27,.8) 0%,rgba(28,33,27,.35) 45%,rgba(28,33,27,0) 65%),linear-gradient(0deg,rgba(28,33,27,.88) 0%,rgba(28,33,27,.25) 55%,rgba(28,33,27,.4) 100%)"></div>
+    <div style="position:relative;max-width:1440px;width:100%;margin:0 auto;padding:120px clamp(20px,4vw,56px) clamp(48px,7vw,88px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:48px;align-items:end">
+      <div data-reveal="0" style="display:flex;flex-direction:column;gap:24px">
+        <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#D4C4B0;font-weight:500">OUTDOOR LIVING</p>
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(40px,4.6vw,70px);line-height:1.02;text-wrap:balance">Sometimes the best room in the house isn't in the house.</h2>
+        <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;max-width:540px;color:#EBE1D6;text-wrap:pretty">On the Costa del Sol, outside is part of everyday life. We consider house and garden, sunlight and shade, cooking and dining, planting and materials, water, lighting and the way people move through a space.</p>
+      </div>
+      <div data-reveal="150" style="background:rgba(28,33,27,.5);backdrop-filter:blur(10px);border:1px solid rgba(246,243,236,.18);padding:28px;display:flex;flex-direction:column;gap:20px;max-width:480px;justify-self:end;width:100%">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <span style="font-size:10.5px;letter-spacing:.3em;font-weight:500;color:#D4C4B0">ONE TERRACE, ALL DAY</span>
+          <span style="font:500 11px ui-monospace,Menlo,monospace;color:#D4C4B0">{{ tod.time }}</span>
+        </div>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.15;min-height:70px">{{ tod.line }}</span>
+        <input class="dm" type="range" min="0" max="300" value="{{ todVal }}" onInput="{{ setTod }}" aria-label="Time of day">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+          <sc-for list="{{ todStops }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="cursor:pointer;border:0;background:transparent;padding:6px 0;font:500 10px 'DM Sans',sans-serif;letter-spacing:.14em;color:{{ t.color }};text-align:{{ t.align }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section data-screen-label="04 Services" style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px)">
+<section data-screen-label="04 Services" style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,160px) clamp(20px,4vw,56px)">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:56px">
-    <div style="display:flex;flex-direction:column;gap:18px">
+    <div data-reveal="0" style="display:flex;flex-direction:column;gap:18px">
       <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">WHAT WE DO</p>
-      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4.2vw,60px);line-height:1.04">One team. One project.<br>Inside and out.</h2>
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,66px);line-height:1.02">One team. One project.<br><em style="color:#3F4A3C">Inside and out.</em></h2>
     </div>
-    <div style="display:flex;gap:8px;background:#E6DED1;padding:4px;border-radius:2px">
+    <div style="position:relative;display:grid;grid-template-columns:repeat(3,auto);background:#E6DED1;padding:4px;border-radius:40px">
+      <div style="position:absolute;top:4px;bottom:4px;left:{{ pill.left }}px;width:{{ pill.w }}px;background:#3F4A3C;border-radius:40px;transition:left .45s cubic-bezier(.2,.7,.2,1),width .45s cubic-bezier(.2,.7,.2,1)"></div>
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
-        <button onClick="{{ f.onClick }}" style="border:0;cursor:pointer;font:500 12px 'DM Sans',sans-serif;letter-spacing:.08em;padding:10px 16px;border-radius:2px;background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+        <button ref="{{ f.ref }}" onClick="{{ f.onClick }}" style="position:relative;border:0;cursor:pointer;font:500 12px 'DM Sans',sans-serif;letter-spacing:.12em;padding:12px 20px;border-radius:40px;background:transparent;color:{{ f.fg }};transition:color .3s">{{ f.label }}</button>
       </sc-for>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:28px">
     <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
-      <article style="display:flex;flex-direction:column;gap:18px;cursor:pointer" style-hover="transform:translateY(-3px)">
-        <div style="position:relative;aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#E6DED1 0 12px,#EBE4D9 12px 24px);display:flex;align-items:flex-end;padding:16px">
-          <image-slot id="a-img-2-{{ $index }}" shape="rect" src="{{ s.img }}" placeholder="photo: {{ s.photo }}" style="position:absolute;inset:0"></image-slot>
+      <article onMouseEnter="{{ s.onEnter }}" onMouseLeave="{{ s.onLeave }}" style="display:flex;flex-direction:column;gap:18px;cursor:pointer">
+        <div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#E6DED1">
+          <div role="img" aria-label="{{ s.title }}" style="position:absolute;inset:0;background-image:url({{ s.img }});background-size:cover;background-position:center;transform:scale({{ s.scale }});transition:transform 1.2s cubic-bezier(.2,.7,.2,1)"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(28,33,27,.92) 0%,rgba(28,33,27,.4) 45%,rgba(28,33,27,0) 70%);opacity:{{ s.over }};transition:opacity .5s ease"></div>
+          <div style="position:absolute;left:20px;right:20px;bottom:20px;display:flex;flex-direction:column;gap:10px;color:#F6F3EC;opacity:{{ s.over }};transform:translateY({{ s.overY }}px);transition:opacity .5s ease,transform .5s ease">
+            <span style="font-size:10px;letter-spacing:.26em;font-weight:500;color:#D4C4B0">TYPICAL SCOPE</span>
+            <span style="font-size:13px;line-height:1.6;font-weight:300">{{ s.scope }}</span>
+          </div>
+          <span style="position:absolute;top:16px;left:16px;font-size:10px;letter-spacing:.24em;font-weight:500;color:#F6F3EC;background:rgba(35,40,36,.45);backdrop-filter:blur(6px);padding:6px 10px;border-radius:40px">{{ s.kind }}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.24em;font-weight:500;color:#B9785E">
-          <span>{{ s.kind }}</span><span style="color:#8a8378">{{ s.num }}</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:30px;line-height:1.1">{{ s.title }}</h3>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#B9785E">{{ s.num }}</span>
         </div>
-        <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:30px;line-height:1.1">{{ s.title }}</h3>
         <p style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:#3F4A3C">{{ s.line }}</p>
         <p style="margin:0;font-size:14px;line-height:1.65;font-weight:300;color:#4a4f4b;text-wrap:pretty">{{ s.body }}</p>
-        <a href="#start" style="font-size:13px;letter-spacing:.04em;border-top:1px solid rgba(35,40,36,.15);padding-top:14px;display:flex;justify-content:space-between">Start your project <span>→</span></a>
+        <a href="#start" style="font-size:13px;letter-spacing:.04em;border-top:1px solid rgba(35,40,36,.15);padding-top:14px;display:flex;justify-content:space-between">Start your project <span style="transform:translateX({{ s.arrow }}px);transition:transform .4s ease">→</span></a>
       </article>
     </sc-for>
   </div>
 </section>
 
 <section id="work" data-screen-label="05 Featured concept" style="background:#E6DED1">
-  <div style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:48px">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,150px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:40px">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">FEATURED CONCEPT</p>
-        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4.2vw,60px);line-height:1.04">A hillside terrace, rethought<br>as one outdoor room.</h2>
+      <div data-reveal="0" style="display:flex;flex-direction:column;gap:18px">
+        <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">FEATURED CONCEPT · BENAHAVÍS</p>
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,66px);line-height:1.02">A hillside terrace, rethought<br>as one outdoor room.</h2>
       </div>
       <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
         <span style="font:500 10px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#232824;border:1px solid rgba(35,40,36,.3);padding:8px 12px;border-radius:2px">CONCEPT — NOT A COMPLETED DOMAIRE PROJECT</span>
       </sc-if>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
-      <div style="position:relative;grid-column:span 2;min-height:520px;background:repeating-linear-gradient(135deg,#D4C4B0 0 12px,#d9cab7 12px 24px);display:flex;align-items:flex-end;padding:20px"><image-slot id="a-img-3" shape="rect" src="https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg?auto=compress&cs=tinysrgb&w=1600" placeholder="wide scene: terrace, pool edge, planting" style="position:absolute;inset:0"></image-slot></div>
-      <div style="display:grid;grid-template-rows:1fr 1fr;gap:12px;min-height:520px">
-        <div style="position:relative;background:repeating-linear-gradient(135deg,#D4C4B0 0 12px,#d9cab7 12px 24px);display:flex;align-items:flex-end;padding:16px"><image-slot id="a-img-4" shape="rect" src="https://images.pexels.com/photos/1115804/pexels-photo-1115804.jpeg?auto=compress&cs=tinysrgb&w=1600" placeholder="detail: stone + timber" style="position:absolute;inset:0"></image-slot></div>
-        <div style="position:relative;background:repeating-linear-gradient(135deg,#D4C4B0 0 12px,#d9cab7 12px 24px);display:flex;align-items:flex-end;padding:16px"><image-slot id="a-img-5" shape="rect" src="https://images.pexels.com/photos/3990359/pexels-photo-3990359.jpeg?auto=compress&cs=tinysrgb&w=1600" placeholder="before" style="position:absolute;inset:0"></image-slot></div>
+    <div ref="{{ baRef }}" onPointerDown="{{ baDown }}" onPointerMove="{{ baMove }}" onPointerUp="{{ baUp }}" onPointerLeave="{{ baUp }}" style="position:relative;aspect-ratio:16/8;min-height:380px;overflow:hidden;cursor:ew-resize;touch-action:pan-y;user-select:none;background:#D4C4B0">
+      <img src="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=2000" alt="After: the terrace as one finished outdoor room" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none">
+      <div style="position:absolute;inset:0;clip-path:inset(0 {{ baClip }}% 0 0)">
+        <img src="https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=2000" alt="Before: the same terrace, unresolved (illustrative)" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.72) contrast(.85) blur(1px);pointer-events:none">
+      </div>
+      <span style="position:absolute;top:20px;left:20px;font-size:10.5px;letter-spacing:.26em;font-weight:500;color:#F6F3EC;background:rgba(35,40,36,.55);padding:7px 12px;border-radius:40px">BEFORE</span>
+      <span style="position:absolute;top:20px;right:20px;font-size:10.5px;letter-spacing:.26em;font-weight:500;color:#232824;background:rgba(246,243,236,.85);padding:7px 12px;border-radius:40px">AFTER</span>
+      <div style="position:absolute;top:0;bottom:0;left:{{ baSplit }}%;width:2px;margin-left:-1px;background:#F6F3EC;pointer-events:none">
+        <div style="position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:#F6F3EC;box-shadow:0 6px 24px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;gap:6px;color:#3F4A3C;font-size:14px">
+          <span>←</span><span>→</span>
+        </div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:32px;border-top:1px solid rgba(35,40,36,.2);padding-top:32px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:32px">
       <sc-for list="{{ caseFields }}" as="c" hint-placeholder-count="4">
-        <div style="display:flex;flex-direction:column;gap:10px">
+        <div data-reveal="{{ c.d }}" style="display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(35,40,36,.25);padding-top:20px">
           <span style="font-size:10.5px;letter-spacing:.26em;font-weight:500;color:#3F4A3C">{{ c.k }}</span>
           <p style="margin:0;font-size:14px;line-height:1.65;font-weight:300;text-wrap:pretty">{{ c.v }}</p>
         </div>
       </sc-for>
     </div>
+    <a href="#start" style="align-self:flex-start;font-size:14px;border-bottom:1px solid #B9785E;padding-bottom:4px">Discuss a similar project →</a>
   </div>
 </section>
 
-<section data-screen-label="06 Renovations" style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:clamp(40px,6vw,96px);align-items:center">
-  <div style="display:flex;flex-direction:column;gap:26px;order:1">
+<section ref="{{ renoRef }}" data-screen-label="06 Renovations" style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,160px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:clamp(40px,6vw,96px);align-items:center">
+  <div style="position:relative;aspect-ratio:5/6;overflow:hidden;background:#E6DED1">
+    <img src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Renovated villa living room" style="position:absolute;left:0;right:0;top:-10%;width:100%;height:120%;object-fit:cover;transform:translateY({{ renoShift }}px)">
+    <img src="assets/monogram-chalk.png" alt="" style="position:absolute;top:24px;right:24px;width:52px;opacity:.85">
+  </div>
+  <div data-reveal="0" style="display:flex;flex-direction:column;gap:26px">
     <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">RENOVATIONS</p>
-    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,3.8vw,54px);line-height:1.08;text-wrap:balance">And when the transformation moves inside, we're already there.</h2>
+    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4vw,58px);line-height:1.06;text-wrap:balance">And when the transformation moves inside, <em style="color:#3F4A3C">we're already there.</em></h2>
     <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;text-wrap:pretty">You should not need one company for the garden, another for the pool and then start all over again when you decide to renovate the house.</p>
     <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;text-wrap:pretty">From a new kitchen or bathroom to a complete villa renovation, extension or substantial interior reconfiguration, we bring together the right people and manage the work as one joined-up project.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <sc-for list="{{ renoTags }}" as="t" hint-placeholder-count="6">
-        <span style="font-size:12px;padding:8px 14px;border:1px solid rgba(63,74,60,.3);border-radius:40px;color:#3F4A3C">{{ t }}</span>
+        <span style="font-size:12px;padding:8px 14px;border:1px solid rgba(63,74,60,.3);border-radius:40px;color:#3F4A3C;cursor:default" style-hover="background:#3F4A3C;color:#F6F3EC;border-color:#3F4A3C">{{ t }}</span>
       </sc-for>
     </div>
     <a href="#" style="align-self:flex-start;border:1px solid #3F4A3C;color:#3F4A3C;padding:15px 26px;font-size:14px;letter-spacing:.04em;border-radius:2px" style-hover="background:#3F4A3C;color:#F6F3EC">Explore Renovations</a>
   </div>
-  <div style="position:relative;aspect-ratio:5/6;background:repeating-linear-gradient(135deg,#E6DED1 0 12px,#EBE4D9 12px 24px);display:flex;align-items:flex-end;padding:20px;position:relative">
-    <image-slot id="a-img-6" shape="rect" src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1600" placeholder="interior: kitchen opening to terrace" style="position:absolute;inset:0"></image-slot>
-    <img src="assets/monogram-olive.png" alt="" style="position:absolute;top:24px;right:24px;width:56px;opacity:.5">
-  </div>
 </section>
 
 <section data-screen-label="07 Process" style="background:#232824;color:#F6F3EC">
-  <div style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:64px">
+  <div onMouseEnter="{{ pausePlay }}" onMouseLeave="{{ resumePlay }}" style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,150px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:56px">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:32px;align-items:end">
-      <div style="display:flex;flex-direction:column;gap:18px">
+      <div data-reveal="0" style="display:flex;flex-direction:column;gap:18px">
         <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">OUR APPROACH</p>
-        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4.2vw,60px);line-height:1.04">One project.<br>The right people.</h2>
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,66px);line-height:1.02">One project.<br>The right people.</h2>
       </div>
-      <p style="margin:0;font-size:16px;line-height:1.75;font-weight:300;color:#D4C4B0;max-width:480px;text-wrap:pretty">Good projects depend on more than good ideas. They need clear scope, the right specialists, realistic decisions and disciplined delivery.</p>
+      <p data-reveal="100" style="margin:0;font-size:16px;line-height:1.75;font-weight:300;color:#D4C4B0;max-width:480px;text-wrap:pretty">Good projects depend on more than good ideas. They need clear scope, the right specialists, realistic decisions and disciplined delivery.</p>
     </div>
-    <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:0">
-      <sc-for list="{{ steps }}" as="p" hint-placeholder-count="5">
-        <li onMouseEnter="{{ p.onEnter }}" style="border-top:1px solid {{ p.line }};padding:28px 24px 8px 0;display:flex;flex-direction:column;gap:14px;cursor:default">
-          <span style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:{{ p.numColor }};line-height:1">{{ p.n }}</span>
-          <span style="font-size:13px;letter-spacing:.2em;font-weight:500">{{ p.t }}</span>
-          <span style="font-size:14px;line-height:1.6;font-weight:300;color:#D4C4B0;text-wrap:pretty">{{ p.d }}</span>
-        </li>
-      </sc-for>
-    </ol>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,80px);align-items:center">
+      <div style="position:relative;min-height:300px;display:flex;flex-direction:column;justify-content:center;gap:18px">
+        <span style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(140px,16vw,240px);line-height:.8;color:#B9785E">{{ cur.n }}</span>
+        <span style="font-size:13px;letter-spacing:.28em;font-weight:500">{{ cur.t }}</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:clamp(26px,2.4vw,34px);line-height:1.25;max-width:520px;color:#EBE1D6">{{ cur.d }}</span>
+      </div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+        <sc-for list="{{ steps }}" as="p" hint-placeholder-count="5">
+          <li onClick="{{ p.onClick }}" style="position:relative;cursor:pointer;display:grid;grid-template-columns:56px 1fr;align-items:center;gap:16px;padding:22px 0;border-top:1px solid rgba(246,243,236,.14)">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:22px;color:{{ p.numColor }};transition:color .3s">{{ p.n }}</span>
+            <span style="font-size:14px;letter-spacing:.22em;font-weight:500;color:{{ p.color }};transition:color .3s">{{ p.t }}</span>
+            <span style="position:absolute;left:0;right:0;top:-1px;height:1px;overflow:hidden">{{ p.bar }}</span>
+          </li>
+        </sc-for>
+      </ol>
+    </div>
     <a href="#" style="align-self:flex-start;color:#F6F3EC;font-size:14px;letter-spacing:.04em;border-bottom:1px solid #B9785E;padding-bottom:4px" style-hover="color:#B9785E">See our approach →</a>
   </div>
 </section>
 
-<section data-screen-label="08 Areas" style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,6vw,96px)">
-  <div style="display:flex;flex-direction:column;gap:22px">
+<section data-screen-label="08 Areas" style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,150px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,6vw,96px)">
+  <div data-reveal="0" style="display:flex;flex-direction:column;gap:22px">
     <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">AREAS</p>
-    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,3.8vw,54px);line-height:1.06">Selected projects across the western Costa del Sol.</h2>
+    <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4vw,58px);line-height:1.04">Selected projects across the western Costa del Sol.</h2>
     <p style="margin:0;font-size:15px;line-height:1.75;font-weight:300;max-width:440px;text-wrap:pretty">Each brief is shaped around the actual property — its levels, views, exposure and access — rather than a generic local template.</p>
   </div>
-  <div style="display:flex;flex-direction:column">
+  <div onMouseMove="{{ areaMove }}" onMouseLeave="{{ areaLeave }}" style="position:relative;display:flex;flex-direction:column">
     <sc-for list="{{ areas }}" as="a" hint-placeholder-count="4">
-      <a href="#" style="display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;padding:26px 0;border-top:1px solid rgba(35,40,36,.15);color:#232824" style-hover="color:#3F4A3C;padding-left:10px">
-        <span style="font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400">{{ a.name }}</span>
-        <span style="font-size:18px;color:#B9785E">→</span>
-        <span style="font-size:13px;font-weight:300;color:#5c615d;grid-column:1/-1">{{ a.d }}</span>
+      <a href="#" onMouseEnter="{{ a.onEnter }}" style="position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;padding:30px 0;border-top:1px solid rgba(35,40,36,.15);color:{{ a.color }};transition:color .3s">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,3.4vw,48px);font-weight:400;transform:translateX({{ a.x }}px);transition:transform .45s cubic-bezier(.2,.7,.2,1)">{{ a.name }}</span>
+        <span style="font-size:20px;color:#B9785E;transform:translateX({{ a.x }}px);transition:transform .45s">→</span>
+        <span style="font-size:13px;font-weight:300;color:#5c615d;grid-column:1/-1;transform:translateX({{ a.x }}px);transition:transform .45s cubic-bezier(.2,.7,.2,1)">{{ a.d }}</span>
       </a>
     </sc-for>
+    <div style="position:absolute;z-index:2;left:0;top:0;width:260px;height:320px;pointer-events:none;overflow:hidden;transform:translate({{ prev.x }}px,{{ prev.y }}px) rotate({{ prev.r }}deg) scale({{ prev.s }});opacity:{{ prev.o }};transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .35s ease;box-shadow:0 20px 50px rgba(35,40,36,.25)">
+      <div style="width:100%;height:100%;background-image:url({{ prev.img }});background-size:cover;background-position:center"></div>
+    </div>
   </div>
 </section>
 
 <section data-screen-label="09 Advice" style="border-top:1px solid rgba(35,40,36,.1)">
-  <div style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:48px">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,150px) clamp(20px,4vw,56px);display:flex;flex-direction:column;gap:48px">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:18px">
+      <div data-reveal="0" style="display:flex;flex-direction:column;gap:18px">
         <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">ADVICE</p>
-        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(36px,3.8vw,54px);line-height:1.06">Useful before you begin.</h2>
+        <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(38px,4vw,58px);line-height:1.04">Useful before you begin.</h2>
       </div>
       <a href="#" style="font-size:14px;border-bottom:1px solid #B9785E;padding-bottom:4px">All advice →</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px">
       <sc-for list="{{ advice }}" as="v" hint-placeholder-count="3">
-        <a href="#" style="display:flex;flex-direction:column;gap:16px;color:#232824" style-hover="color:#3F4A3C">
-          <div style="position:relative;aspect-ratio:3/2;background:repeating-linear-gradient(135deg,#E6DED1 0 12px,#EBE4D9 12px 24px);display:flex;align-items:flex-end;padding:14px"><image-slot id="a-img-7-{{ $index }}" shape="rect" src="{{ v.img }}" placeholder="{{ v.photo }}" style="position:absolute;inset:0"></image-slot></div>
-          <span style="font-size:10.5px;letter-spacing:.24em;font-weight:500;color:#B9785E">{{ v.cat }}</span>
-          <span style="font-family:'Cormorant Garamond',serif;font-size:26px;line-height:1.18;text-wrap:balance">{{ v.t }}</span>
+        <a href="#" data-reveal="{{ v.d }}" style="display:flex;flex-direction:column;gap:16px;color:#232824" style-hover="color:#3F4A3C">
+          <div style="position:relative;aspect-ratio:3/2;overflow:hidden;background:#E6DED1"><div style="width:100%;height:100%;background-image:url({{ v.img }});background-size:cover;background-position:center;transition:transform 1s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.06)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.24em;font-weight:500;color:#B9785E"><span>{{ v.cat }}</span><span style="color:#8a8378">{{ v.read }}</span></div>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:27px;line-height:1.16;text-wrap:balance">{{ v.t }}</span>
         </a>
       </sc-for>
     </div>
   </div>
 </section>
 
-<section id="start" data-screen-label="10 Enquiry" style="background:#E6DED1">
-  <div style="max-width:1440px;margin:0 auto;padding:clamp(80px,10vw,140px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:clamp(40px,6vw,96px)">
-    <div style="display:flex;flex-direction:column;gap:24px">
-      <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#B9785E;font-weight:500">START A PROJECT</p>
-      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,4.6vw,66px);line-height:1.02">Tell us what you would like to change.</h2>
-      <p style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;line-height:1.5;color:#3F4A3C;max-width:480px;text-wrap:pretty">A better terrace. A complete outdoor transformation. A new kitchen. A full villa renovation. Or the whole property, inside and out.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;font-weight:300;max-width:440px">You do not need to have everything worked out. Tell us where the property is, what you would like to change and what stage you are at.</p>
+<section id="start" data-screen-label="10 Enquiry" style="background:#3F4A3C;color:#F6F3EC">
+  <div style="max-width:1440px;margin:0 auto;padding:clamp(96px,11vw,150px) clamp(20px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:clamp(40px,6vw,96px);align-items:start">
+    <div data-reveal="0" style="display:flex;flex-direction:column;gap:24px;position:sticky;top:120px">
+      <p style="margin:0;font-size:11px;letter-spacing:.3em;color:#D4C4B0;font-weight:500">START A PROJECT</p>
+      <h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(44px,5vw,76px);line-height:1">Tell us what you would like to change.</h2>
+      <p style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;line-height:1.5;color:#EBE1D6;max-width:480px;text-wrap:pretty">A better terrace. A complete outdoor transformation. A new kitchen. A full villa renovation. Or the whole property, inside and out.</p>
+      <p style="margin:0;font-size:14px;line-height:1.7;font-weight:300;color:#D4C4B0;max-width:420px">You do not need to have everything worked out. Three short steps — about a minute.</p>
     </div>
-    <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-      <form onSubmit="{{ submit }}" style="background:#F6F3EC;padding:clamp(24px,3vw,44px);display:flex;flex-direction:column;gap:22px">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:18px">
-          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">NAME<input required style="font:300 15px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:8px 0;outline:none;color:#232824"></label>
-          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">EMAIL<input type="email" required style="font:300 15px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:8px 0;outline:none;color:#232824"></label>
-          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">PHONE / WHATSAPP<input style="font:300 15px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:8px 0;outline:none;color:#232824"></label>
-          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">PROPERTY LOCATION<input placeholder="e.g. Benahavís" style="font:300 15px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:8px 0;outline:none;color:#232824"></label>
+    <div style="background:#F6F3EC;color:#232824;padding:clamp(24px,3vw,44px);display:flex;flex-direction:column;gap:28px;min-height:520px">
+      <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.24em;font-weight:500"><span style="color:#B9785E">STEP {{ fsNum }} OF 3</span><span style="color:#8a8378">{{ fsName }}</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            <sc-for list="{{ fsBars }}" as="b" hint-placeholder-count="3"><div style="height:3px;background:{{ b.bg }};transition:background .4s"></div></sc-for>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <span style="font-size:11px;letter-spacing:.18em;font-weight:500">PROJECT TYPE</span>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
+      </sc-if>
+      <sc-if value="{{ fs0 }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:32px">What kind of project is it?</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px">
             <sc-for list="{{ types }}" as="t" hint-placeholder-count="4">
-              <button type="button" onClick="{{ t.onClick }}" style="cursor:pointer;font:400 13px 'DM Sans',sans-serif;padding:10px 18px;border-radius:40px;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+              <button type="button" onClick="{{ t.onClick }}" style="cursor:pointer;text-align:left;padding:20px;border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.fg }};border-radius:2px;display:flex;flex-direction:column;gap:6px;font-family:'DM Sans',sans-serif;transition:background .25s,color .25s,border-color .25s">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:26px">{{ t.label }}</span>
+                <span style="font-size:12.5px;font-weight:300;line-height:1.5">{{ t.d }}</span>
+              </button>
             </sc-for>
           </div>
         </div>
-        <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">WHAT WOULD YOU LIKE TO CHANGE?<textarea rows="3" style="font:300 15px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:8px 0;outline:none;resize:vertical;color:#232824"></textarea></label>
-        <label style="display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5;font-weight:300;color:#4a4f4b"><input type="checkbox" required style="margin-top:3px;accent-color:#3F4A3C">I agree to DOMAIRE contacting me about my enquiry and to the privacy policy.</label>
-        <button type="submit" style="cursor:pointer;border:0;background:#3F4A3C;color:#F6F3EC;font:500 14px 'DM Sans',sans-serif;letter-spacing:.06em;padding:18px;border-radius:2px" style-hover="background:#2f382d">Start your project</button>
-      </form>
-    </sc-if>
-    <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
-      <div style="background:#F6F3EC;padding:56px 44px;display:flex;flex-direction:column;gap:18px;justify-content:center">
-        <img src="assets/monogram-olive.png" alt="" style="width:56px">
-        <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:40px">Thank you.</h3>
-        <p style="margin:0;font-size:15px;line-height:1.7;font-weight:300">We've received your enquiry and sent a confirmation to your inbox. A member of the team will be in touch to arrange a first conversation.</p>
-      </div>
-    </sc-if>
+      </sc-if>
+      <sc-if value="{{ fs1 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:32px">What would you like to change?</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ scopes }}" as="c" hint-placeholder-count="8">
+              <button type="button" onClick="{{ c.onClick }}" style="cursor:pointer;font:400 13px 'DM Sans',sans-serif;padding:10px 16px;border-radius:40px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};transition:background .2s,color .2s">{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">PROPERTY LOCATION<input placeholder="e.g. Benahavís" style="font:300 16px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:10px 0;outline:none;color:#232824"></label>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:11px;letter-spacing:.18em;font-weight:500">PREFERRED TIMING</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ timings }}" as="c" hint-placeholder-count="4">
+                <button type="button" onClick="{{ c.onClick }}" style="cursor:pointer;font:400 13px 'DM Sans',sans-serif;padding:10px 16px;border-radius:40px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ fs2 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:32px">How should we reach you?</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:18px">
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">NAME<input style="font:300 16px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:10px 0;outline:none;color:#232824"></label>
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">EMAIL<input type="email" style="font:300 16px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:10px 0;outline:none;color:#232824"></label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.18em;font-weight:500">PHONE / WHATSAPP<input style="font:300 16px 'DM Sans',sans-serif;border:0;border-bottom:1px solid rgba(35,40,36,.3);background:transparent;padding:10px 0;outline:none;color:#232824"></label>
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5;font-weight:300;color:#4a4f4b;cursor:pointer"><input type="checkbox" checked="{{ consent }}" onChange="{{ toggleConsent }}" style="margin-top:3px;accent-color:#3F4A3C">I agree to DOMAIRE contacting me about my enquiry and to the privacy policy.</label>
+        </div>
+      </sc-if>
+      <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;border-top:1px solid rgba(35,40,36,.12);padding-top:22px">
+          <button type="button" onClick="{{ back }}" style="cursor:pointer;border:0;background:transparent;font:500 13px 'DM Sans',sans-serif;letter-spacing:.06em;color:{{ backColor }};padding:10px 0">← Back</button>
+          <button type="button" onClick="{{ fwd }}" style="cursor:pointer;border:0;background:{{ fwdBg }};color:#F6F3EC;font:500 14px 'DM Sans',sans-serif;letter-spacing:.06em;padding:16px 28px;border-radius:2px;transition:background .3s">{{ fwdLabel }}</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px;justify-content:center;flex:1">
+          <img src="assets/monogram-olive.png" alt="" style="width:60px">
+          <h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:300;font-size:46px">Thank you.</h3>
+          <p style="margin:0;font-size:15px;line-height:1.7;font-weight:300">We've received your enquiry and sent a confirmation to your inbox. A member of the team will be in touch to arrange a first conversation.</p>
+          <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(35,40,36,.12);padding-top:16px;font-size:13px;font-weight:300">
+            <span><b style="font-weight:500">Project:</b> {{ type }}</span>
+            <span><b style="font-weight:500">Changes:</b> {{ scopeSummary }}</span>
+            <span><b style="font-weight:500">Timing:</b> {{ timing }}</span>
+          </div>
+          <button type="button" onClick="{{ reset }}" style="align-self:flex-start;cursor:pointer;border:1px solid #3F4A3C;background:transparent;color:#3F4A3C;font:500 13px 'DM Sans',sans-serif;padding:12px 20px;border-radius:2px">Start another enquiry</button>
+        </div>
+      </sc-if>
+    </div>
   </div>
 </section>
 
-<footer style="background:#3F4A3C;color:#F6F3EC">
+<footer style="background:#232824;color:#F6F3EC;overflow:hidden">
   <div style="max-width:1440px;margin:0 auto;padding:clamp(64px,8vw,110px) clamp(20px,4vw,56px) 36px;display:flex;flex-direction:column;gap:64px">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:40px">
       <div style="display:flex;flex-direction:column;gap:20px;grid-column:span 2;min-width:0">
-        <img src="assets/monogram-chalk.png" alt="DOMAIRE monogram" style="width:64px">
+        <img src="assets/monogram-chalk.png" alt="DOMAIRE monogram" style="width:60px">
         <p style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:26px;line-height:1.3">Transforming homes.<br>Inside and out.</p>
         <p style="margin:0;font-size:13px;line-height:1.7;font-weight:300;color:#D4C4B0;max-width:340px">Design, build and renovation company specialising in outdoor transformations and complete villa renovations across Marbella and the Costa del Sol.</p>
       </div>
@@ -276,84 +369,142 @@
         <div style="display:flex;flex-direction:column;gap:12px">
           <span style="font-size:10.5px;letter-spacing:.26em;font-weight:500;color:#D4C4B0;margin-bottom:6px">{{ col.h }}</span>
           <sc-for list="{{ col.items }}" as="i" hint-placeholder-count="4">
-            <a href="#" style="font-size:14px;font-weight:300;color:#F6F3EC" style-hover="color:#D4C4B0">{{ i }}</a>
+            <a href="#" style="font-size:14px;font-weight:300;color:#F6F3EC" style-hover="color:#B9785E">{{ i }}</a>
           </sc-for>
         </div>
       </sc-for>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(246,243,236,.18);padding-top:28px;font-size:12px;font-weight:300;color:#D4C4B0">
-      <span style="font-family:'Cormorant Garamond',serif;font-size:20px;letter-spacing:.26em;color:#F6F3EC">DOMΛIRE</span>
+    <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(72px,17vw,250px);letter-spacing:.14em;line-height:.8;color:#3F4A3C;text-align:center;margin-right:-.14em;white-space:nowrap">DOMΛIRE</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(246,243,236,.14);padding-top:28px;font-size:12px;font-weight:300;color:#D4C4B0">
+      <span>DESIGN · BUILD · RENOVATE</span>
       <div style="display:flex;gap:24px;flex-wrap:wrap"><a href="#" style="color:#D4C4B0">Privacy</a><a href="#" style="color:#D4C4B0">Legal notice</a><a href="#" style="color:#D4C4B0">Cookies</a><a href="#" style="color:#D4C4B0">Instagram</a><a href="#" style="color:#D4C4B0">LinkedIn</a><span>English · Español</span></div>
     </div>
   </div>
 </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showConceptLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;autoAdvance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;showConceptLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const PX = (id, w) => 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + (w || 1200);
+const TOD = [
+  { key: 'MORNING', time: '08:30', line: 'Where mornings start.', filter: 'brightness(1.06) saturate(.85) hue-rotate(-6deg)', tint: 'rgba(214,226,236,.35)', glow: 0 },
+  { key: 'MIDDAY', time: '13:00', line: 'Sunlight and shade, considered together.', filter: 'brightness(1.1) contrast(1.05) saturate(1)', tint: 'rgba(255,255,255,0)', glow: 0 },
+  { key: 'GOLDEN HOUR', time: '19:45', line: 'Where friends stay for dinner.', filter: 'sepia(.35) saturate(1.25) brightness(.98)', tint: 'rgba(214,150,110,.35)', glow: .35 },
+  { key: 'EVENING', time: '22:15', line: 'How it feels after the sun goes down.', filter: 'brightness(.42) saturate(.75) hue-rotate(12deg)', tint: 'rgba(30,40,60,.45)', glow: 1 }
+];
 class Component extends DCLogic {
-  state = { filter: 'All', type: 'Both', step: 0, sent: false, w: window.innerWidth, menu: false };
-  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); }
-  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
-  renderVals() { const v = this._rv(); const R = [["open plan",[1571460,2988860]],["interior",[1643383,3209045,1571460,2988860]],["living",[3209045,1643383]],["bathroom",[1457847,1910472]],["kitchen",[1080721,2724748,2635038,3935350]],["dining",[2290753,258154]],["pergola",[2290753,258154]],["pool",[1134176,261102,258154]],["terrace",[1732414,258154,2290753]],["before",[3990359]],["site",[3990359]],["glazed",[323780]],["extension",[323780]],["bedroom",[5178070]],["planting",[1974596,2587054,1438832]],["garden",[1974596,1438832,2587054]],["landscap",[2587054,1974596]],["detail",[1115804,1974596]],["sketch",[1974596,323780]],["stone",[1115804]],["villa",[2587054,1438832,1115804]],["wide",[2587054,1438832]],["after",[1115804]]]; const used = {"1115804":1,"1134176":1,"1643383":1,"1732414":1,"2290753":1,"3990359":1};
-    const pick = t => { t = (t || '').toLowerCase(); let a = [1438832, 2587054, 1115804]; for (const [k, ids] of R) if (new RegExp('\\b' + k).test(t)) { a = ids; break; } let b = a[0]; for (const i of a) if ((used[i] || 0) < (used[b] || 0)) b = i; used[b] = (used[b] || 0) + 1; return 'https://images.pexels.com/photos/' + b + '/pexels-photo-' + b + '.jpeg?auto=compress&cs=tinysrgb&w=1200'; };
-    for (const k in v) if (Array.isArray(v[k])) v[k] = v[k].map(o => o && typeof o === 'object' && 'photo' in o ? { ...o, img: pick(o.photo) } : o);
-    if (v.activePhoto) v.activeImg = pick(v.activePhoto);
-    return v; }
-  _rv() {
-    const { filter, type, step, sent, w, menu } = this.state;
-    const wide = w >= 1180;
+  state = { filter: 'All', type: 'Both', step: 0, playing: true, w: window.innerWidth, vh: window.innerHeight, y: 0, menu: false, loaded: false, tod: 100, hov: -1, ba: 50, drag: false, area: -1, mx: 0, my: 0, fs: 0, scopes: ['Terrace'], timing: 'Next 6 months', consent: true, sent: false, pill: { left: 4, w: 60 } };
+  introRef = React.createRef(); renoRef = React.createRef(); baRef = React.createRef(); fRefs = [React.createRef(), React.createRef(), React.createRef()];
+  get motion() { return (this.props.motion ?? true) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  componentDidMount() {
+    this.onR = () => this.setState({ w: window.innerWidth, vh: window.innerHeight }, () => this.measurePill());
+    this.onS = () => { if (this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = null; this.setState({ y: window.scrollY }); }); };
+    window.addEventListener('resize', this.onR); window.addEventListener('scroll', this.onS, { passive: true });
+    setTimeout(() => this.setState({ loaded: true }), 80);
+    setTimeout(() => this.measurePill(), 300);
+    this.timer = setInterval(() => { if (this.state.playing && (this.props.autoAdvance ?? true)) this.setState(s => ({ step: (s.step + 1) % 5 })); }, 4200);
+    this.setupReveal();
+  }
+  componentDidUpdate() { this.setupReveal(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); window.removeEventListener('scroll', this.onS); clearInterval(this.timer); this.io && this.io.disconnect(); }
+  setupReveal() {
+    if (!this.motion) return;
+    if (!this.io) this.io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; this.io.unobserve(e.target); } }), { threshold: .12, rootMargin: '0px 0px -5% 0px' });
+    document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el => {
+      el.setAttribute('data-rv', '1'); const d = +el.getAttribute('data-reveal') || 0;
+      const r = el.getBoundingClientRect(); if (r.top < window.innerHeight) return;
+      el.style.transition = 'opacity 1s ease ' + d + 'ms, transform 1.1s cubic-bezier(.2,.7,.2,1) ' + d + 'ms';
+      el.style.opacity = '0'; el.style.transform = 'translateY(32px)'; this.io.observe(el);
+    });
+  }
+  measurePill() { const i = ['All', 'Outdoor', 'Renovations'].indexOf(this.state.filter); const el = this.fRefs[i].current; if (el) this.setState({ pill: { left: el.offsetLeft, w: el.offsetWidth } }); }
+  prog(ref, lead) { const el = ref.current; if (!el) return 0; const r = el.getBoundingClientRect(); const vh = this.state.vh; return Math.max(0, Math.min(1, (vh * (lead || .85) - r.top) / (r.height * .7))); }
+  baSet(e) { const el = this.baRef.current; if (!el) return; const r = el.getBoundingClientRect(); this.setState({ ba: Math.max(2, Math.min(98, (e.clientX - r.left) / r.width * 100)) }); }
+  renderVals() {
+    const S = this.state, m = this.motion, wide = S.w >= 1180, scrolled = S.y > 60 || S.menu;
+    const docH = document.documentElement.scrollHeight - S.vh;
+    const L = S.loaded || !m;
     const all = [
-      { kind: 'OUTDOOR', title: 'Outdoor Transformations', line: 'One outside space. One complete idea.', body: 'Complete exterior projects bringing terraces, planting, shade, pools, lighting and living areas together.', photo: 'terrace + planting, wide' },
-      { kind: 'RENOVATION', title: 'Complete Villa Renovations', line: 'Transform the whole home.', body: 'Whole-property transformations coordinated across layout, interiors, building services, finishes and the relationship with outside.', photo: 'villa interior, open plan' },
-      { kind: 'OUTDOOR', title: 'Pools & Natural Pools', line: 'More than the pool itself.', body: 'New pools, renovations and natural swimming concepts considered with the wider landscape.', photo: 'pool edge + stone terrace' },
-      { kind: 'OUTDOOR', title: 'Landscaping & Gardens', line: 'Structure, character and connection.', body: 'Planting and hard landscape considered as part of the home.', photo: 'textural planting, paths' },
-      { kind: 'RENOVATION', title: 'Kitchens', line: 'The room that connects everything.', body: 'Layout, storage, cooking, lighting and the relationship with dining and outdoor living.', photo: 'kitchen island, stone' },
-      { kind: 'OUTDOOR', title: 'Outdoor Kitchens & Entertaining', line: 'Built around the way you host.', body: 'Preparation, cooking, storage, dining, shade and seating considered together.', photo: 'outdoor kitchen under pergola' },
-      { kind: 'OUTDOOR', title: 'Terraces, Pergolas & Shade', line: 'Spend longer outside.', body: 'Surfaces and shade that make the exterior more comfortable and connected.', photo: 'pergola shade, dining' },
-      { kind: 'RENOVATION', title: 'Bathrooms', line: 'Calm, practical and properly resolved.', body: 'Complete bathroom transformations across layout, finishes, lighting and services.', photo: 'stone bathroom detail' }
+      { kind: 'OUTDOOR', title: 'Outdoor Transformations', line: 'One outside space. One complete idea.', body: 'Complete exterior projects bringing terraces, planting, shade, pools, lighting and living areas together.', scope: 'Terraces · landscaping · pool environments · kitchens · pergolas · lighting · privacy · wellness', id: 1974596 },
+      { kind: 'RENOVATION', title: 'Complete Villa Renovations', line: 'Transform the whole home.', body: 'Whole-property transformations coordinated across layout, interiors, building services, finishes and the relationship with outside.', scope: 'Layout · kitchens · bathrooms · flooring · joinery · windows & doors · services · structural works', id: 1571460 },
+      { kind: 'OUTDOOR', title: 'Pools & Natural Pools', line: 'More than the pool itself.', body: 'New pools, renovations and natural swimming concepts considered with the wider landscape.', scope: 'Pool works · terraces · planting · shade · access · lighting · specialist technical input', id: 1134176 },
+      { kind: 'OUTDOOR', title: 'Landscaping & Gardens', line: 'Structure, character and connection.', body: 'Planting and hard landscape considered as part of the home.', scope: 'Planting · privacy · paths · hard landscaping · irrigation · lighting coordination', id: 1115804 },
+      { kind: 'RENOVATION', title: 'Kitchens', line: 'The room that connects everything.', body: 'Layout, storage, cooking, lighting and the relationship with dining and outdoor living.', scope: 'Cabinetry · worktops · islands · appliances · lighting · plumbing · electrical · finishes', id: 1080721 },
+      { kind: 'OUTDOOR', title: 'Outdoor Kitchens & Entertaining', line: 'Built around the way you host.', body: 'Preparation, cooking, storage, dining, shade and seating considered together.', scope: 'Kitchens · grills · sinks · bars · islands · dining · seating · lighting · power & water', id: 261102 },
+      { kind: 'OUTDOOR', title: 'Terraces, Pergolas & Shade', line: 'Spend longer outside.', body: 'Surfaces and shade that make the exterior more comfortable and connected.', scope: 'Terraces · pergolas · covered dining · lounge areas · steps · balustrades · shade · lighting', id: 2587054 },
+      { kind: 'RENOVATION', title: 'Bathrooms', line: 'Calm, practical and properly resolved.', body: 'Complete bathroom transformations across layout, finishes, lighting and services.', scope: 'Tiling · stone · sanitaryware · cabinetry · lighting · plumbing · ventilation', id: 1457847 },
+      { kind: 'RENOVATION', title: 'Extensions & Reconfiguration', line: 'Change the home, not just the finish.', body: 'Where footprint, structure or layout changes, DOMAIRE coordinates the appropriate professional team and approvals.', scope: 'Architectural & technical design · structural input · approvals · construction · finishes', id: 323780 }
     ];
-    const list = filter === 'All' ? all.slice(0, 4) : all.filter(s => s.kind === filter.toUpperCase().replace('RENOVATIONS', 'RENOVATION'));
-    const services = list.slice(0, 4).map((s, i) => ({ ...s, num: '0' + (i + 1) }));
-    const filters = ['All', 'Outdoor', 'Renovations'].map(l => ({ label: l.toUpperCase(), bg: filter === l ? '#3F4A3C' : 'transparent', fg: filter === l ? '#F6F3EC' : '#232824', onClick: () => this.setState({ filter: l }) }));
-    const steps = [
-      ['01', 'UNDERSTAND', 'Property, priorities and what needs to change.'],
-      ['02', 'DEVELOP', 'Concept and appropriate design and technical specialists.'],
-      ['03', 'DEFINE', 'Scope, specifications, responsibilities, programme and commercial stages.'],
-      ['04', 'BUILD', 'Coordinated work, reporting, decisions and variations.'],
-      ['05', 'FINISH', 'Final details, handover and agreed aftercare.']
-    ].map(([n, t, d], i) => ({ n, t, d, line: i <= step ? '#B9785E' : 'rgba(246,243,236,.2)', numColor: i === step ? '#B9785E' : '#F6F3EC', onEnter: () => this.setState({ step: i }) }));
-    const types = ['Outdoor', 'Renovation', 'Both', 'Not sure'].map(l => ({ label: l, bg: type === l ? '#3F4A3C' : 'transparent', fg: type === l ? '#F6F3EC' : '#232824', border: type === l ? '#3F4A3C' : 'rgba(35,40,36,.3)', onClick: () => this.setState({ type: l }) }));
+    const list = S.filter === 'All' ? [all[0], all[1], all[2], all[3]] : all.filter(s => s.kind === (S.filter === 'Outdoor' ? 'OUTDOOR' : 'RENOVATION')).slice(0, 4);
+    const services = list.map((s, i) => { const h = S.hov === i; return { ...s, img: PX(s.id), num: '0' + (i + 1), scale: h ? 1.07 : 1, over: h ? 1 : 0, overY: h ? 0 : 12, arrow: h ? 6 : 0, onEnter: () => this.setState({ hov: i }), onLeave: () => this.setState({ hov: -1 }) }; });
+    const filters = ['All', 'Outdoor', 'Renovations'].map((l, i) => ({ label: l.toUpperCase(), ref: this.fRefs[i], fg: S.filter === l ? '#F6F3EC' : '#232824', onClick: () => this.setState({ filter: l, hov: -1 }, () => this.measurePill()) }));
+    const todF = S.tod / 100, ti = Math.round(todF), T = TOD[ti];
+    const stepsData = [['01', 'UNDERSTAND', 'Property, priorities and what needs to change.'], ['02', 'DEVELOP', 'Concept and the appropriate design and technical specialists.'], ['03', 'DEFINE', 'Scope, specifications, responsibilities, programme and commercial stages.'], ['04', 'BUILD', 'Coordinated work, reporting, decisions and variations.'], ['05', 'FINISH', 'Final details, handover and agreed aftercare.']];
+    const auto = (this.props.autoAdvance ?? true) && S.playing;
+    const steps = stepsData.map(([n, t, d], i) => ({ n, t, d, numColor: i === S.step ? '#B9785E' : 'rgba(246,243,236,.45)', color: i === S.step ? '#F6F3EC' : 'rgba(246,243,236,.55)', onClick: () => this.setState({ step: i }),
+      bar: i === S.step ? React.createElement('span', { key: 'b' + S.step + (auto ? 'a' : 'p'), style: { display: 'block', height: 1, background: '#B9785E', width: auto ? undefined : '100%', animation: auto ? 'dmFill 4.2s linear forwards' : 'none' } }) : null }));
+    const cur = { n: stepsData[S.step][0], t: stepsData[S.step][1], d: stepsData[S.step][2] };
+    const areasData = [['Marbella', 'Outdoor transformations & villa renovations', 1438832], ['Benahavís', 'Outdoor living & villa renovation', 2587054], ['Estepona', 'Outdoor transformations & home renovation', 1115804], ['Costa del Sol', 'Selected projects across the western coast', 1732414]];
+    const areas = areasData.map(([name, d], i) => ({ name, d, color: S.area === i ? '#3F4A3C' : (S.area >= 0 ? 'rgba(35,40,36,.4)' : '#232824'), x: S.area === i ? 14 : 0, onEnter: () => this.setState({ area: i }) }));
+    const intro = this.prog(this.introRef, .8);
+    const scrubT = ['A terrace can work harder.', 'A garden can connect more naturally to the house.', 'A kitchen can open into the way you entertain.', 'An entire villa can be rethought around the way you live now.'];
+    const scrub = scrubT.map((t, i) => ({ n: '0' + (i + 1), t, o: m ? (.14 + .86 * Math.max(0, Math.min(1, intro * 5.2 - i))).toFixed(3) : 1 }));
+    const renoP = this.renoRef.current ? (this.renoRef.current.getBoundingClientRect().top - S.vh / 2) : 0;
+    const typesData = [['Outdoor', 'Terraces, gardens, pools, kitchens.'], ['Renovation', 'Rooms, kitchens, whole villas.'], ['Both', 'Inside and out, one project.'], ['Not sure', "Let's talk it through."]];
+    const chip = (on, onClick, label) => ({ label, onClick, bg: on ? '#3F4A3C' : 'transparent', fg: on ? '#F6F3EC' : '#232824', border: on ? '#3F4A3C' : 'rgba(35,40,36,.3)' });
+    const scopeOpts = ['Terrace', 'Garden', 'Pool', 'Outdoor kitchen', 'Shade & pergola', 'Kitchen', 'Bathroom', 'Whole villa'];
+    const canFwd = S.fs < 2 || S.consent;
     return {
-      nav: ['Outdoor Living', 'Renovations', 'Projects', 'Our Approach', 'About', 'Areas', 'Advice'],
+      wide, narrow: !wide, menuVisible: !wide && S.menu, menuLabel: S.menu ? 'CLOSE' : 'MENU', toggleMenu: () => this.setState({ menu: !S.menu }),
+      hdrBg: scrolled ? 'rgba(246,243,236,.94)' : 'rgba(246,243,236,0)', hdrBlur: scrolled ? 'blur(10px)' : 'none', hdrLine: scrolled ? 'rgba(35,40,36,.08)' : 'rgba(246,243,236,0)', hdrPad: scrolled ? '14px' : '24px', hdrInk: scrolled ? '#232824' : '#F6F3EC',
+      ctaBg: scrolled ? '#3F4A3C' : '#F6F3EC', ctaInk: scrolled ? '#F6F3EC' : '#232824',
+      nav: ['Outdoor Living', 'Renovations', 'Projects', 'Our Approach', 'About', 'Areas', 'Advice'].map(label => ({ label, color: scrolled ? '#232824' : '#F6F3EC' })),
+      progress: docH > 0 ? (S.y / docH * 100).toFixed(2) : 0,
       showLabels: this.props.showConceptLabels ?? true,
-      filters, services, steps, types,
+      heroShift: m ? Math.round(S.y * .32) : 0, heroScale: L ? 1 : 1.12, heroFade: Math.max(0, 1 - S.y / (S.vh * .8)).toFixed(3),
+      in1: { o: L ? 1 : 0, y: L ? 0 : 16 }, in2: { y: L ? 0 : 110 }, in3: { y: L ? 0 : 110 }, in4: { o: L ? 1 : 0, y: L ? 0 : 16, w: L ? 64 : 0 },
+      scrollCue: React.createElement('span', { style: { width: 1, height: 48, background: '#F6F3EC', display: 'block', animation: m ? 'dmPulse 2.4s ease-in-out infinite' : 'none' } }),
+      marquee: React.createElement('div', { style: { display: 'flex', width: 'max-content', animation: m ? 'dmMarquee 48s linear infinite' : 'none' } },
+        [0, 1].map(k => React.createElement('div', { key: k, style: { display: 'flex', gap: 48, padding: '22px 24px', fontFamily: "'Cormorant Garamond',serif", fontSize: 26, fontStyle: 'italic', whiteSpace: 'nowrap', alignItems: 'center' } },
+          ['Quality', 'Craftsmanship', 'Integrity', 'Lifestyle', 'Nature', 'Structure', 'Living', 'People · Places · Possibility'].flatMap((t, i) => [React.createElement('span', { key: 't' + i }, t), React.createElement('span', { key: 'd' + i, style: { width: 6, height: 6, borderRadius: '50%', background: '#B9785E', display: 'inline-block' } })])))),
+      introRef: this.introRef, scrub,
+      tod: T, todVal: S.tod, setTod: e => this.setState({ tod: +e.target.value }),
+      todStops: TOD.map((t, i) => ({ label: t.key, color: i === ti ? '#F6F3EC' : 'rgba(246,243,236,.5)', align: i === 0 ? 'left' : i === 3 ? 'right' : 'center', onClick: () => this.setState({ tod: i * 100 }) })),
+      filters, pill: S.pill, services,
+      baRef: this.baRef, baSplit: S.ba.toFixed(2), baClip: (100 - S.ba).toFixed(2),
+      baDown: e => { this.setState({ drag: true }); this.baSet(e); }, baMove: e => { if (S.drag || e.pointerType === 'mouse' && e.buttons === 1) this.baSet(e); }, baUp: () => S.drag && this.setState({ drag: false }),
       caseFields: [
-        { k: 'THE BRIEF', v: 'A terrace that looked good but was rarely used beyond the morning.' },
-        { k: 'BEFORE', v: 'Exposed paving, no shade after midday, and a pool disconnected from the house.' },
-        { k: 'THE IDEA', v: 'Covered dining, an outdoor kitchen and planting that frames the view.' },
-        { k: 'SCOPE', v: 'Terraces · Pergola · Outdoor kitchen · Planting · Lighting' }
+        { k: 'THE BRIEF', v: 'A terrace that looked good but was rarely used beyond the morning.', d: 0 },
+        { k: 'BEFORE', v: 'Exposed paving, no shade after midday, and a pool disconnected from the house.', d: 100 },
+        { k: 'THE IDEA', v: 'Covered dining, an outdoor kitchen and planting that frames the view.', d: 200 },
+        { k: 'SCOPE', v: 'Terraces · Pergola · Outdoor kitchen · Planting · Lighting', d: 300 }
       ],
+      renoRef: this.renoRef, renoShift: m ? Math.round(renoP * -.08) : 0,
       renoTags: ['Complete villas', 'Interiors', 'Kitchens', 'Bathrooms', 'Extensions', 'Joinery & finishes'],
-      areas: [
-        { name: 'Marbella', d: 'Outdoor transformations & villa renovations' },
-        { name: 'Benahavís', d: 'Outdoor living & villa renovation' },
-        { name: 'Estepona', d: 'Outdoor transformations & home renovation' },
-        { name: 'Costa del Sol', d: 'Selected projects across the western coast' }
-      ],
+      steps, cur, pausePlay: () => this.setState({ playing: false }), resumePlay: () => this.setState({ playing: true }),
+      areas, areaMove: e => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ mx: e.clientX - r.left, my: e.clientY - r.top }); }, areaLeave: () => this.setState({ area: -1 }),
+      prev: { x: Math.round(S.mx + 30), y: Math.round(S.my - 160), r: S.area >= 0 ? -3 : 0, s: S.area >= 0 ? 1 : .85, o: S.area >= 0 && wide ? 1 : 0, img: PX(areasData[Math.max(0, S.area)][2], 600) },
       advice: [
-        { cat: 'OUTDOOR LIVING', t: 'What to decide before redesigning your outdoor space', photo: 'terrace plan sketch' },
-        { cat: 'RENOVATIONS', t: 'Renovating a villa while you are outside Spain', photo: 'site walk-through' },
-        { cat: 'POOLS', t: 'Pool renovation vs replacement: questions to ask first', photo: 'pool detail' }
+        { cat: 'OUTDOOR LIVING', read: 'GUIDE', t: 'What to decide before redesigning your outdoor space', img: PX(1732414, 900), d: 0 },
+        { cat: 'RENOVATIONS', read: 'GUIDE', t: 'Renovating a villa while you are outside Spain', img: PX(3209045, 900), d: 120 },
+        { cat: 'POOLS', read: 'GUIDE', t: 'Pool renovation vs replacement: questions to ask first', img: PX(261102, 900), d: 240 }
       ],
+      formOpen: !S.sent, sent: S.sent, fs0: !S.sent && S.fs === 0, fs1: !S.sent && S.fs === 1, fs2: !S.sent && S.fs === 2,
+      fsNum: S.fs + 1, fsName: ['PROJECT TYPE', 'SCOPE & TIMING', 'CONTACT'][S.fs],
+      fsBars: [0, 1, 2].map(i => ({ bg: i <= S.fs ? '#B9785E' : 'rgba(35,40,36,.12)' })),
+      types: typesData.map(([l, d]) => ({ ...chip(S.type === l, () => this.setState({ type: l }), l), d })),
+      scopes: scopeOpts.map(l => chip(S.scopes.includes(l), () => this.setState({ scopes: S.scopes.includes(l) ? S.scopes.filter(x => x !== l) : [...S.scopes, l] }), l)),
+      timings: ['As soon as possible', 'Next 6 months', 'Within a year', 'Just exploring'].map(l => chip(S.timing === l, () => this.setState({ timing: l }), l)),
+      consent: S.consent, toggleConsent: () => this.setState({ consent: !S.consent }),
+      back: () => S.fs > 0 && this.setState({ fs: S.fs - 1 }), backColor: S.fs > 0 ? '#232824' : 'rgba(35,40,36,.25)',
+      fwd: () => { if (!canFwd) return; S.fs < 2 ? this.setState({ fs: S.fs + 1 }) : this.setState({ sent: true }); },
+      fwdLabel: S.fs < 2 ? 'Continue →' : 'Start your project', fwdBg: canFwd ? '#3F4A3C' : 'rgba(63,74,60,.35)',
+      type: S.type, timing: S.timing, scopeSummary: S.scopes.length ? S.scopes.join(', ') : 'Not specified',
+      reset: () => this.setState({ sent: false, fs: 0 }),
       footerCols: [
         { h: 'OUTDOOR LIVING', items: ['Outdoor Transformations', 'Landscaping & Gardens', 'Outdoor Kitchens', 'Pools & Natural Pools'] },
         { h: 'RENOVATIONS', items: ['Complete Villas', 'Interiors', 'Kitchens', 'Bathrooms'] },
         { h: 'AREAS', items: ['Marbella', 'Benahavís', 'Estepona', 'Costa del Sol'] }
-      ],
-      notSent: !sent, sent,
-      wide, narrow: !wide, menuVisible: !wide && menu, menuLabel: menu ? 'CLOSE' : 'MENU',
-      toggleMenu: () => this.setState({ menu: !menu }),
-      submit: e => { e.preventDefault(); this.setState({ sent: true }); }
+      ]
     };
   }
 }
